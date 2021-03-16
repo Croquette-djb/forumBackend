@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.forum.forumbackend.mapper.PostMapper">
+    <resultMap id="MyPost" type="com.forum.forumbackend.bean.Post">
+        <id column="postId" property="postId"/>
+        <result column="ownerId" property="ownerId"/>
+        <result column="activity" property="activity"/>
+        <result column="title" property="title"/>
+        <result column="text" property="text"/>
+        <result column="likes" property="likes"/>
+        <result column="dislikes" property="dislikes"/>
+        <result column="views" property="views"/>
+        <result column="comments" property="comments"/>
+        <collection property="author" ofType="com.forum.forumbackend.bean.User">
+            <result column="nickname" property="nickname"/>
+            <result column="avatar" property="avatar"/>
+        </collection>
+    </resultMap>
+
+    <!--获取所有帖子信息，封装到Post类中-->
+    <select id="findAllPosts" resultMap="MyPost">
+        select p.postId postId,p.activity activity,p.title title,p.text text,
+               p.likes likes,p.dislikes dislikes,p.views views,p.comments comments,
+               u.nickname nickname,u.avatar avatar
+         from posts p,users u
+         where p.ownerId=u.userId
+    </select>
+
+    <select id="findPostById" resultMap="MyPost">
+        select p.postId postId,p.activity activity,p.title title,p.text text,
+               p.likes likes,p.dislikes dislikes,p.views views,p.comments comments,
+               u.nickname nickname,u.avatar avatar
+         from posts p,users u
+         where p.ownerId=u.userId and p.postId=#{postId}
+    </select>
+    <!--insert-->
+    <insert id="createPost">
+        insert into posts (ownerId,activity,title,text,likes,dislikes,views,comments)
+        values (#{arg0},#{arg1},#{arg2},#{arg3},0,0,0,0);
+    </insert>
+
+<!--    update-->
+    <update id="updateViews">
+        update posts set views = views+1 where postId=#{postId}
+    </update>
+</mapper>

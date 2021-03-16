@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.forum.forumbackend.mapper.CommentMapper">
+    <resultMap id="MyComment" type="com.forum.forumbackend.bean.Comment">
+        <id column="mainId" property="mainId"/>
+        <result column="ownerId" property="ownerId"/>
+        <result column="postId" property="postId"/>
+        <result column="createTime" property="createTime"/>
+        <result column="text" property="text"/>
+        <result column="likes" property="likes"/>
+        <result column="dislikes" property="dislikes"/>
+        <collection property="author" ofType="com.forum.forumbackend.bean.User">
+            <result column="nickname" property="nickname"/>
+            <result column="avatar" property="avatar"/>
+        </collection>
+    </resultMap>
+
+    <select id="getCommentByPostId" resultMap="MyComment">
+        select c.mainId mainId,c.ownerId ownerId,c.postId postId,c.createTime createTime,
+               c.text text,c.likes likes,c.dislikes dislikes,
+               u.avatar avatar,u.nickname nickname
+        from comments c,users u
+        where c.postId=#{postId} and u.userId = ownerId
+    </select>
+</mapper>
